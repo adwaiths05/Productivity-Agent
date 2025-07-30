@@ -1,6 +1,6 @@
 # Productivity AI Agent - Phase 1
 
-A beginner-friendly AI agent for task management, syncing tasks to a Notion database. Built with CrewAI, Streamlit, SQLite, and Notion API, it assigns energy levels to tasks and lays the foundation for energy-based prioritization and productivity enhancement.
+A beginner-friendly AI agent for task management, syncing tasks to a Notion database. Built with CrewAI, Gradio, SQLite, and Notion API, it assigns energy levels to tasks and lays the foundation for energy-based prioritization and productivity enhancement.
 
 ---
 
@@ -17,7 +17,7 @@ A beginner-friendly AI agent for task management, syncing tasks to a Notion data
 
 - **Python:** Core scripting.
 - **CrewAI:** Agent orchestration.
-- **Streamlit:** Web UI.
+- **Gradio:** Web UI.
 - **SQLite:** Task storage.
 - **Notion API:** Sync tasks to Notion.
 - **requests:** API calls.
@@ -66,7 +66,7 @@ streamlit run phase1_productivity_agent.py
 
 ## Usage
 
-- Open the Streamlit app in your browser (default: [http://localhost:8501](http://localhost:8501)).
+- Open the Gradio app in your browser (default: [http://localhost:8501](http://localhost:8501)).
 - Enter commands:
   - **Add tasks:**  
     `Add task: Write report`
@@ -94,7 +94,7 @@ streamlit run phase1_productivity_agent.py
 
 ## Notes
 
-- Replace the mock LLM with Grok 3 (xAI API: https://x.ai/api) for real parsing.
+- Replace the mock LLM with Grok 3 for real parsing.
 - Ensure Notion API token has read/write access to the database.
 - For issues, check Notion API response logs or Streamlit console.
 
