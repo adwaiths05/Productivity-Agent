@@ -115,3 +115,6 @@ with gr.Blocks() as demo:
     output_text = gr.Textbox(label="Output")
     submit_btn = gr.Button("Submit")
     submit_btn.click(fn=process_input, inputs=input_text, outputs=output_text)
+
+if __name__ == "__main__":
+    demo.launch()
