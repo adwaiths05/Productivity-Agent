@@ -1,5 +1,5 @@
+import gradio as gr
 import sqlite3
-import streamlit as st
 import requests
 from crewai import Agent, Task, Crew
 from crewai_tools import tool
@@ -17,7 +17,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Mock Grok 3 API (replace with xAI API: https://x.ai/api)
+# Mock Grok 3 API
 def mock_grok_api(prompt):
     prompt = prompt.lower()
     if "add" in prompt:
@@ -39,7 +39,7 @@ def task_manager(action: str, task: str = None, energy: str = None) -> str:
     cursor = conn.cursor()
     
     if action == "add" and task:
-        priority = "medium"  # Default, will be dynamic in later phases
+        priority = "medium"
         cursor.execute("INSERT INTO tasks (name, energy, priority) VALUES (?, ?, ?)", 
                       (task, energy, priority))
         conn.commit()
@@ -92,26 +92,26 @@ task_manager_agent = Agent(
     tools=[task_manager, notion_sync]
 )
 
-# Streamlit UI
-def main():
-    st.title("Productivity AI Agent - Phase 1")
+# Gradio Interface
+def process_input(user_input):
     init_db()
-    
-    user_input = st.text_input("Enter command (e.g., 'Add task: Write report', 'View tasks')")
-    if st.button("Submit"):
-        parsed = mock_grok_api(user_input)
-        if parsed["action"] == "clarify":
-            st.write(parsed["message"])
-        elif parsed["action"] == "add":
-            result = task_manager(parsed["action"], task=parsed["task"], energy=parsed["energy"])
-            st.write(result)
-        elif parsed["action"] == "view":
-            tasks = task_manager(parsed["action"])
-            st.write("Task List:")
-            for task, priority, energy in tasks:
-                st.write(f"{task} (Priority: {priority}, Energy: {energy})")
-            notion_result = notion_sync(tasks)
-            st.write(notion_result)
+    parsed = mock_grok_api(user_input)
+    if parsed["action"] == "clarify":
+        return parsed["message"]
+    elif parsed["action"] == "add":
+        result = task_manager(parsed["action"], task=parsed["task"], energy=parsed["energy"])
+        return result
+    elif parsed["action"] == "view":
+        tasks = task_manager(parsed["action"])
+        task_list = "Task List:\n" + "\n".join([f"{task} (Priority: {priority}, Energy: {energy})" for task, priority, energy in tasks])
+        notion_result = notion_sync(tasks)
+        return f"{task_list}\n{notion_result}"
+    return parsed["message"]
 
-if __name__ == "__main__":
-    main()
+# Gradio UI
+with gr.Blocks() as demo:
+    gr.Markdown("# Productivity AI Agent - Phase 1")
+    input_text = gr.Textbox(label="Enter command (e.g., 'Add task: Write report', 'View tasks')")
+    output_text = gr.Textbox(label="Output")
+    submit_btn = gr.Button("Submit")
+    submit_btn.click(fn=process_input, inputs=input_text, outputs=output_text)
